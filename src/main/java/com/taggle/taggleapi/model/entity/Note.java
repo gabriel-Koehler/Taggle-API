@@ -1,5 +1,7 @@
 package com.taggle.taggleapi.model.entity;
 
+import com.taggle.taggleapi.model.DTO.ConvertToResponse;
+
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Inheritance;
@@ -15,8 +17,14 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Note extends Document{
+public class Note extends Document implements ConvertToResponse<UserTaggle>{
     
     private String content;
+
+    @Override
+    public UserTaggle toDTO() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
+    }
 
 }
