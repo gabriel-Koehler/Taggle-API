@@ -1,6 +1,8 @@
-package com.taggle.taggleapi.model;
+package com.taggle.taggleapi.model.entity;
 
 import java.util.List;
+
+import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserTaggle {
+public class UserTaggle implements ConvertToResponse<UserTaggle> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,4 +25,10 @@ public class UserTaggle {
     private String password;
     @OneToMany(mappedBy = "owner")
     private List<Document> documents;
+    
+    @Override
+    public UserTaggle toDTO() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
+    }
 }

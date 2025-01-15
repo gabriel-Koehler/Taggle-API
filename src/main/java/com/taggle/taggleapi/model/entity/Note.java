@@ -1,4 +1,4 @@
-package com.taggle.taggleapi.model;
+package com.taggle.taggleapi.model.entity;
 
 import jakarta.persistence.Entity;
 
