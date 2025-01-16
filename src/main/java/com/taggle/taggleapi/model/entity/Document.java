@@ -1,5 +1,6 @@
 package com.taggle.taggleapi.model.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -12,8 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Entity
@@ -29,6 +28,9 @@ public abstract class Document {
     private Long id;
     private String type;
     private String title;
+    private LocalDateTime atCreate= LocalDateTime.now();
+    private LocalDateTime atLastAlteration;
+    private Boolean isActive=true;
     @ManyToOne
     private Folder parentFolder;
     @ManyToOne

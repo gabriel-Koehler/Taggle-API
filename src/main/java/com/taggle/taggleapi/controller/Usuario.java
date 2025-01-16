@@ -13,8 +13,11 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -32,12 +35,16 @@ public class Usuario {
     public ResponseEntity<List<UserTaggle>> get() {
         return new ResponseEntity<>(service.getAllUserTaggle(),HttpStatus.OK);
     }
-    @PostMapping("/login")
+    @PostMapping("/register")
     public ResponseEntity<UserTaggle> postMethodName() {
         UserTaggle newUser=new UserTaggle();
-        newUser.setUsername("Test2");
-        newUser.setPassword("123(2)");
+        newUser.setUsername("Test(for note reference)");
+        newUser.setPassword("123(for note reference)");
         return new ResponseEntity<>(service.saveUserTaggle(newUser),HttpStatus.OK);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<UserTaggle> putMethodName(@PathVariable Long id,@RequestBody UserTaggle user) {
+        return new ResponseEntity<>(service.putUserTaggle(user,id),HttpStatus.OK);
     }
     
 }

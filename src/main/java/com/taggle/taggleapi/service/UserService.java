@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.taggle.taggleapi.model.entity.Folder;
+import com.taggle.taggleapi.model.entity.Note;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.DocumentRepository;
 import com.taggle.taggleapi.repository.UserTaggleRepository;
@@ -21,14 +22,24 @@ public class UserService {
     public UserTaggle saveUserTaggle(UserTaggle userTaggle) {
         repository.save(userTaggle);
         Folder defaultFolder = new Folder();
-        defaultFolder.setTitle("default");
+        defaultFolder.setTitle("Default For Note");
         defaultFolder.setType("Folder");
         defaultFolder.setOwner(userTaggle);
         documentRepository.save(defaultFolder);
+        
+        Note defaultNote = new Note();
+        defaultNote.setTitle("default Note");
+        defaultNote.setContent("This is a default note");
+        defaultNote.setType("Note");
+        defaultNote.setOwner(userTaggle);
+        defaultNote.setParentFolder(defaultFolder);
+        documentRepository.save(defaultNote);
+
         return userTaggle;
     }
-    public void putUserTaggle(UserTaggle userTaggle) {
-        repository.save(userTaggle);
+    public UserTaggle putUserTaggle(UserTaggle userTaggle,Long userId) {
+        repository.findById(userId).get();
+        return repository.save(userTaggle);
     }
     public UserTaggle getUserTaggle(Long userId) {
         return repository.findById(userId).get();

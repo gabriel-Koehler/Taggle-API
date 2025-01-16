@@ -1,5 +1,6 @@
 package com.taggle.taggleapi.model.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.Cascade;
@@ -34,7 +35,10 @@ public class UserTaggle implements ConvertToResponse<UserTaggle> {
     @OneToMany(mappedBy = "owner")
     @Cascade(CascadeType.REMOVE)
     private List<Document> documents;
-    
+
+    private LocalDateTime atCreate= LocalDateTime.now();
+    private LocalDateTime atLastAlteration;
+    private Boolean isActive=true;
     @Override
     public UserTaggle toDTO() {
         // TODO Auto-generated method stub
