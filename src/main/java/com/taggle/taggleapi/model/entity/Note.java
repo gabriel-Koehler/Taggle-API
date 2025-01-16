@@ -23,8 +23,9 @@ public class Note extends Document implements ConvertToResponse<UserTaggle>{
 
     @Override
     public UserTaggle toDTO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
+        UserTaggle dtoTaggle = new UserTaggle();
+        dtoTaggle.setId(this.getId());
+        return dtoTaggle;
     }
 
 }

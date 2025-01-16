@@ -2,6 +2,11 @@ package com.taggle.taggleapi.model.entity;
 
 import java.util.List;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.persistence.Entity;
@@ -20,10 +25,14 @@ import lombok.NoArgsConstructor;
 public class UserTaggle implements ConvertToResponse<UserTaggle> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIdentityInfo(
+   generator = ObjectIdGenerators.PropertyGenerator.class,
+   property = "id")
     private Long id;
     private String username;
     private String password;
     @OneToMany(mappedBy = "owner")
+    @Cascade(CascadeType.REMOVE)
     private List<Document> documents;
     
     @Override

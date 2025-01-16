@@ -28,15 +28,15 @@ public class Usuario {
     public String getMethodName() {
         return "Hello world!";
     }
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<UserTaggle>> get() {
         return new ResponseEntity<>(service.getAllUserTaggle(),HttpStatus.OK);
     }
     @PostMapping("/login")
     public ResponseEntity<UserTaggle> postMethodName() {
         UserTaggle newUser=new UserTaggle();
-        newUser.setUsername("Test");
-        newUser.setPassword("123");
+        newUser.setUsername("Test2");
+        newUser.setPassword("123(2)");
         return new ResponseEntity<>(service.saveUserTaggle(newUser),HttpStatus.OK);
     }
     

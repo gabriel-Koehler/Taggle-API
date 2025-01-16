@@ -22,6 +22,7 @@ public class UserService {
         repository.save(userTaggle);
         Folder defaultFolder = new Folder();
         defaultFolder.setTitle("default");
+        defaultFolder.setType("Folder");
         defaultFolder.setOwner(userTaggle);
         documentRepository.save(defaultFolder);
         return userTaggle;

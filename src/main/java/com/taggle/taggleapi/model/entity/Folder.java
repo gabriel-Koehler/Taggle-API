@@ -2,6 +2,9 @@ package com.taggle.taggleapi.model.entity;
 
 import java.util.List;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.persistence.Entity;
@@ -20,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Folder extends Document  implements ConvertToResponse<Folder>{
     
-    @OneToMany(mappedBy = "parentFolder")
+    @OneToMany(mappedBy = "parentFolder", cascade = {CascadeType.})
     private List<Document> content;
 
     @Override
