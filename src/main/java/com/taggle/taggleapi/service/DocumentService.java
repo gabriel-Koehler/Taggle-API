@@ -41,6 +41,9 @@ public class DocumentService {
         return folderRepository.save(folder).toDTO();
         
     }
+    public Document moveDocument(Document entity,Long toDocumentId){
+        return null;
+    }
     public Note updateNote(Note entity) {
         
         return null;
