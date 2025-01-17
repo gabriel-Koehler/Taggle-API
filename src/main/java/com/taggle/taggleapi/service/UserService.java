@@ -9,6 +9,8 @@ import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.DocumentRepository;
+import com.taggle.taggleapi.repository.FolderRepository;
+import com.taggle.taggleapi.repository.NoteRepository;
 import com.taggle.taggleapi.repository.UserTaggleRepository;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +19,8 @@ import lombok.AllArgsConstructor;
 @Service
 public class UserService {
     private UserTaggleRepository repository;
-    private DocumentRepository documentRepository;
+    private FolderRepository folderRepository;
+    private NoteRepository noteRepository;
 
     public UserTaggle saveUserTaggle(UserTaggle userTaggle) {
         repository.save(userTaggle);
@@ -25,7 +28,7 @@ public class UserService {
         defaultFolder.setTitle("Default For Note");
         defaultFolder.setType("Folder");
         defaultFolder.setOwner(userTaggle);
-        documentRepository.save(defaultFolder);
+        folderRepository.save(defaultFolder);
         
         Note defaultNote = new Note();
         defaultNote.setTitle("default Note");
@@ -33,7 +36,7 @@ public class UserService {
         defaultNote.setType("Note");
         defaultNote.setOwner(userTaggle);
         defaultNote.setParentFolder(defaultFolder);
-        documentRepository.save(defaultNote);
+        noteRepository.save(defaultNote);
 
         return userTaggle;
     }

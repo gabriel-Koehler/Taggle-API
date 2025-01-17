@@ -5,20 +5,22 @@ import org.springframework.stereotype.Service;
 import com.taggle.taggleapi.model.entity.Document;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
-import com.taggle.taggleapi.repository.DocumentRepository;
+import com.taggle.taggleapi.repository.FolderRepository;
+import com.taggle.taggleapi.repository.NoteRepository;
 
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class DocumentService {
-    private DocumentRepository repository;
+    private FolderRepository folderRepository;
+    private NoteRepository noteRepository;
 
     public Folder saveFolder(Folder object) {
-        return repository.save(object);
+        return folderRepository.save(object);
     }
     public Note saveNote(Note object) {
-        return repository.save(object);
+        return noteRepository.save(object);
     }
 
 
