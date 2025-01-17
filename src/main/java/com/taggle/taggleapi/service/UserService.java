@@ -48,7 +48,9 @@ public class UserService {
         return repository.findById(userId).get();
     }
     public List<UserTaggle> getAllUserTaggle() {
-        return repository.findAll();
+        List<UserTaggle> users =repository.findAll();
+
+        return users.stream().map(UserTaggle::toDTO).toList();
     }
     public void deleteUserTaggle(Long userId) {
         repository.deleteById(userId);

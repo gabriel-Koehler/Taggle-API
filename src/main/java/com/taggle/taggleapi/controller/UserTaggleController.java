@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user")
-public class Usuario {
+public class UserTaggleController {
     private UserService service;
 
     @GetMapping("/hello")
@@ -36,7 +36,7 @@ public class Usuario {
         return new ResponseEntity<>(service.getAllUserTaggle(),HttpStatus.OK);
     }
     @PostMapping("/register")
-    public ResponseEntity<UserTaggle> postMethodName() {
+    public ResponseEntity<UserTaggle> registerNewUser() {
         UserTaggle newUser=new UserTaggle();
         newUser.setUsername("Test(for note reference)");
         newUser.setPassword("123(for note reference)");
