@@ -8,6 +8,7 @@ import com.taggle.taggleapi.model.DTO.Folder.FolderPUT;
 import com.taggle.taggleapi.model.entity.Document;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
+import com.taggle.taggleapi.repository.DocumentRepository;
 import com.taggle.taggleapi.repository.FolderRepository;
 import com.taggle.taggleapi.repository.NoteRepository;
 
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class DocumentService {
     private final ModelMapper mapper;
+    private DocumentRepository repository;
     private UserService userService;
     private FolderRepository folderRepository;
     private NoteRepository noteRepository;
@@ -25,6 +27,7 @@ public class DocumentService {
         Folder folder = new Folder();
         mapper.map(entity,folder);
         folder.setOwner(userService.getUserTaggle(ownerId));
+        folder.setType("Folder");
         return folderRepository.save(folder).toDTO();
     }
     public Note saveNote(Note entity,Long id) {
@@ -32,9 +35,9 @@ public class DocumentService {
         return noteRepository.save(entity);
     }
     public Folder updateFolder(FolderPUT entity) {
-        Folder newFolder=folderRepository.findById(entity.getId()).get();
-        Folder folder=new Folder();
-        mapper.map(newFolder, folder);
+        Folder folder =  folderRepository.findById(entity.getId()).get();
+        folder.setTitle(entity.getTitle());
+        folder.setAtLastAlteration(entity.getAtLastAlteration());
         return folderRepository.save(folder).toDTO();
         
     }

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +38,7 @@ public class UserTaggle implements ConvertToResponse<UserTaggle> {
     private List<Document> documents;
 
     private LocalDateTime atCreate= LocalDateTime.now();
+    @Nullable
     private LocalDateTime atLastAlteration;
     private Boolean isActive=true;
     @Override

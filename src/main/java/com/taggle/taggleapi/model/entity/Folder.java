@@ -33,7 +33,7 @@ public class Folder extends Document {
         dto.setAtLastAlteration(getAtLastAlteration());
         dto.setIsActive(getIsActive());
         dto.setOwner(getOwner().toDTO());
-        dto.setParentFolder(getParentFolder().toDTO());
+        dto.setParentFolder(getParentFolder()!=null?getParentFolder().toDTO():null);
         return dto;
     }
 
