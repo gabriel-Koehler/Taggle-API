@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ import lombok.Data;
 @JsonIdentityInfo(
    generator = ObjectIdGenerators.PropertyGenerator.class,
    property = "id")
-public abstract class Document {
+public abstract class Document implements ConvertToResponse<Document> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

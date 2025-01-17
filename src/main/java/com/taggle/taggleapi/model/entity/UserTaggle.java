@@ -41,7 +41,12 @@ public class UserTaggle implements ConvertToResponse<UserTaggle> {
     private Boolean isActive=true;
     @Override
     public UserTaggle toDTO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
+        UserTaggle dto = new UserTaggle();
+        dto.setId(this.id);
+        dto.setUsername(this.username);
+        dto.setIsActive(this.isActive);
+        dto.setAtLastAlteration(this.atLastAlteration);
+        dto.setAtCreate(this.atCreate);
+        return dto;
     }
 }

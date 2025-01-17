@@ -17,15 +17,20 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Note extends Document implements ConvertToResponse<UserTaggle>{
+public class Note extends Document{
     
     private String content;
 
     @Override
-    public UserTaggle toDTO() {
-        UserTaggle dtoTaggle = new UserTaggle();
-        dtoTaggle.setId(this.getId());
-        return dtoTaggle;
+    public Note toDTO() {
+        Note dto = new Note();
+        dto.setId(getId());
+        dto.setAtCreate(getAtCreate());
+        dto.setContent(this.content);
+        dto.setOwner(getOwner().toDTO());
+        dto.setParentFolder(getParentFolder().toDTO());
+        return dto;
     }
+
 
 }
