@@ -5,11 +5,12 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.taggle.taggleapi.model.DTO.Document.DocumentGET;
+
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
-import com.taggle.taggleapi.model.DTO.Folder.FolderGet;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPOST;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPUT;
+import com.taggle.taggleapi.model.DTO.Note.NotePOST;
+import com.taggle.taggleapi.model.DTO.Note.NotePUT;
 import com.taggle.taggleapi.model.entity.Document;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
@@ -35,9 +36,12 @@ public class DocumentService {
         folder.setType("Folder");
         return folderRepository.save(folder).toDTO();
     }
-    public Note saveNote(Note entity,Long id) {
-        entity.setParentFolder(folderRepository.findById(id).get());
-        return noteRepository.save(entity);
+    public Note saveNote(NotePOST entity,Long id,Long ownerId) {
+        Note note = new Note();
+        mapper.map(entity,note);
+        note.setParentFolder(folderRepository.findById(id).get());
+        note.setOwner(userService.getUserTaggle(ownerId));
+        return noteRepository.save(note).toDTO();
     }
     public Folder updateFolder(FolderPUT entity) {
         Folder folder =  folderRepository.findById(entity.getId()).get();
@@ -62,9 +66,11 @@ public class DocumentService {
 
         return repository.save(doc);
     }
-    public Note updateNote(Note entity) {
-        
-        return null;
+    public Note updateNote(NotePUT entity) {
+        Note note=noteRepository.findById(entity.getId()).get();
+        note.setAtLastAlteration(entity.getAtLastAlteration());
+        note.setTitle(entity.getTitle());
+        return noteRepository.save(note).toDTO();
     }
     public List<FolderDocGET> getFolders(Long id){
         return folderRepository.findByOwner(userService.getUserTaggle(id)).stream().map((f)->new FolderDocGET(f)).toList();

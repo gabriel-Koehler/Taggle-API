@@ -1,5 +1,5 @@
-package com.taggle.taggleapi.model.DTO.Note.jajva;
+package com.taggle.taggleapi.model.DTO.Note;
 
-public class Note.GET {
+public class NoteGET{
     
 }
