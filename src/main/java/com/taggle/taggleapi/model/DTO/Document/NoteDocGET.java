@@ -1,0 +1,19 @@
+package com.taggle.taggleapi.model.DTO.Document;
+
+import com.taggle.taggleapi.model.entity.Note;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class NoteDocGET extends DocumentGET{
+    private String content;
+
+    public NoteDocGET(Note note) {
+        super(note.getId(),note.getTitle(),note.getType(),note.getAtCreate(),note.getAtLastAlteration(),note.getIsActive());
+        this.content = note.getContent();
+    }
+}

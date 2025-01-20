@@ -27,8 +27,10 @@ public class Note extends Document{
         dto.setId(getId());
         dto.setAtCreate(getAtCreate());
         dto.setContent(this.content);
-        dto.setOwner(getOwner().toDTO());
-        dto.setParentFolder(getParentFolder().toDTO());
+        dto.setAtLastAlteration(getAtLastAlteration());
+        dto.setIsActive(getIsActive());
+        dto.setOwner(getOwner()!=null?getOwner().toDTO():null);
+        dto.setParentFolder(getParentFolder()!=null?getParentFolder().toDTO():null);
         return dto;
     }
 

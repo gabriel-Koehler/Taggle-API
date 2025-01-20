@@ -1,8 +1,13 @@
 package com.taggle.taggleapi.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.taggle.taggleapi.model.DTO.Document.DocumentGET;
+import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
+import com.taggle.taggleapi.model.DTO.Folder.FolderGet;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPOST;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPUT;
 import com.taggle.taggleapi.model.entity.Document;
@@ -41,12 +46,28 @@ public class DocumentService {
         return folderRepository.save(folder).toDTO();
         
     }
-    public Document moveDocument(Document entity,Long toDocumentId){
-        return null;
+    public Document moveDocument(Long id, Long toMove){
+        Folder folder =new Folder();
+        Note note=new Note();
+        Document doc = repository.findById(id).get();
+        if(doc.getType()=="Folder"){
+            mapper.map(doc,folder);
+        }else{
+            mapper.map(doc,note);
+        }
+        // System.out.println(folder.toDTO());
+        // System.out.println(note.toDTO());
+        // System.out.println(doc.toDTO().getOwner());
+        doc.setParentFolder((Folder) repository.findById(toMove).get());
+
+        return repository.save(doc);
     }
     public Note updateNote(Note entity) {
         
         return null;
+    }
+    public List<FolderDocGET> getFolders(Long id){
+        return folderRepository.findByOwner(userService.getUserTaggle(id)).stream().map((f)->new FolderDocGET(f)).toList();
     }
 
     public Document getDocumentPerOwner(long id) {
