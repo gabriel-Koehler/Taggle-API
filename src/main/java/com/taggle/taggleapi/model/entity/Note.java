@@ -27,6 +27,7 @@ public class Note extends Document{
         dto.setId(getId());
         dto.setAtCreate(getAtCreate());
         dto.setContent(this.content);
+        dto.setTitle(getTitle());
         dto.setAtLastAlteration(getAtLastAlteration());
         dto.setIsActive(getIsActive());
         dto.setOwner(getOwner()!=null?getOwner().toDTO():null);

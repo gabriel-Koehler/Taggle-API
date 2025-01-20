@@ -39,8 +39,12 @@ public class DocumentService {
     public Note saveNote(NotePOST entity,Long id,Long ownerId) {
         Note note = new Note();
         mapper.map(entity,note);
+        note.setTitle(entity.getTitle());
+        note.setContent(entity.getContent());
+        note.setType("Note");
         note.setParentFolder(folderRepository.findById(id).get());
         note.setOwner(userService.getUserTaggle(ownerId));
+        System.out.println(note.toDTO());
         return noteRepository.save(note).toDTO();
     }
     public Folder updateFolder(FolderPUT entity) {

@@ -41,10 +41,10 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/create/note/{id}/{ownerId}")
-    public ResponseEntity<Note> createNote(@RequestBody NotePOST entity,@PathVariable Long parentFolderId,@PathVariable Long ownerId) {
+    @PostMapping("/create/note/{folderId}/{ownerId}")
+    public ResponseEntity<Note> createNote(@RequestBody NotePOST entity,@PathVariable Long folderId,@PathVariable Long ownerId) {
         try{
-            return new ResponseEntity<>(documentService.saveNote(entity, parentFolderId, ownerId),HttpStatus.OK);
+            return new ResponseEntity<>(documentService.saveNote(entity, folderId, ownerId),HttpStatus.OK);
 
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -52,11 +52,11 @@ public class DocumentController {
         }
     }
 
-    @PutMapping("/move/{id}/{toMove}")
-    public ResponseEntity<Document> moveDocument(@PathVariable Long id, @PathVariable Long toMove) {
+    @PutMapping("/move/{documentId}/{toMoveId}")
+    public ResponseEntity<Document> moveDocument(@PathVariable Long documentId, @PathVariable Long toMoveId) {
         
         try{
-            return new ResponseEntity<>(documentService.moveDocument(id,toMove),HttpStatus.OK);
+            return new ResponseEntity<>(documentService.moveDocument(documentId,toMoveId),HttpStatus.OK);
         }catch(Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
