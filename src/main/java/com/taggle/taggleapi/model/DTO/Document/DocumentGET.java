@@ -17,7 +17,7 @@ public abstract class DocumentGET {
     private Long id;
     private String type;
     private String title;
-    private LocalDateTime atCreate= LocalDateTime.now();
+    private LocalDateTime atCreate;
     private LocalDateTime atLastAlteration;
     private Boolean isActive=true;
 }

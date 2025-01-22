@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
+import com.taggle.taggleapi.model.DTO.Document.NoteDocGET;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPOST;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPUT;
 import com.taggle.taggleapi.model.DTO.Note.NotePOST;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @AllArgsConstructor
 public class DocumentController {
     private DocumentService documentService;
-
+    //finished
     @PostMapping("/create/folder/{ownerId}")
     public ResponseEntity<Folder> createFolder(@RequestBody FolderPOST document,@PathVariable Long ownerId) {
         try{
@@ -40,7 +41,7 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    //finished
     @PostMapping("/create/note/{folderId}/{ownerId}")
     public ResponseEntity<Note> createNote(@RequestBody NotePOST entity,@PathVariable Long folderId,@PathVariable Long ownerId) {
         try{
@@ -51,7 +52,7 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    //finished
     @PutMapping("/move/{documentId}/{toMoveId}")
     public ResponseEntity<Document> moveDocument(@PathVariable Long documentId, @PathVariable Long toMoveId) {
         
@@ -62,7 +63,7 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    //finished
     @GetMapping("/get/{ownerId}")
     public ResponseEntity<List<FolderDocGET>> getAllDocumentsByOwner(@PathVariable Long ownerId) {
         try{
@@ -82,15 +83,16 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/get/note/owner")
-    public ResponseEntity<Note> getNoteByOwner() {
+    @GetMapping("/get/notes/owner/{ownerId}")
+    public ResponseEntity<List<NoteDocGET>> getNoteByOwner(@PathVariable Long ownerId) {
         try{
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return new ResponseEntity<>(documentService.getNoteOwner(ownerId),HttpStatus.OK);
         }catch(Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    //finished
     @PutMapping("/put/folder")
     public ResponseEntity<Folder> putFolder( @RequestBody FolderPUT entity) {
         try{
@@ -100,7 +102,7 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+    //finished
     @PutMapping("/put/note")
     public ResponseEntity<Note> putNote(@RequestBody NotePUT entity) {
         try{

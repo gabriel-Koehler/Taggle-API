@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface FolderRepository extends JpaRepository<Folder,Long> {
   List<Folder> findByOwner(UserTaggle owner);
+  // List<Folder> findByOwner(UserTaggle owner);
 }

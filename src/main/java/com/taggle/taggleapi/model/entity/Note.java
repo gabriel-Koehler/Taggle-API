@@ -34,6 +34,4 @@ public class Note extends Document{
         dto.setParentFolder(getParentFolder()!=null?getParentFolder().toDTO():null);
         return dto;
     }
-
-
 }

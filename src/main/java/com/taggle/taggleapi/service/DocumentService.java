@@ -1,12 +1,15 @@
 package com.taggle.taggleapi.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-
+import com.taggle.taggleapi.model.DTO.Document.DocumentGET;
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
+import com.taggle.taggleapi.model.DTO.Document.NoteDocGET;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPOST;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPUT;
 import com.taggle.taggleapi.model.DTO.Note.NotePOST;
@@ -77,9 +80,15 @@ public class DocumentService {
         return noteRepository.save(note).toDTO();
     }
     public List<FolderDocGET> getFolders(Long id){
-        return folderRepository.findByOwner(userService.getUserTaggle(id)).stream().map((f)->new FolderDocGET(f)).toList();
+        return folderRepository.findByOwner(userService.getUserTaggle(id))
+        .stream().filter((f)->f.getParentFolder()==null)
+        .map((f)->new FolderDocGET(f))
+        .toList();
     }
 
+    public List<NoteDocGET> getNoteOwner(long id) {
+        return noteRepository.findByOwner(userService.getUserTaggle(id)).stream().map((e)->new NoteDocGET(e)).toList();
+    }
     public Document getDocumentPerOwner(long id) {
         return null;
     }
