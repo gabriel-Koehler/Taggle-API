@@ -10,7 +10,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
 @Configuration
 @EnableWebSecurity
@@ -29,9 +38,29 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/signin").permitAll()
             .requestMatchers(HttpMethod.POST,"/login").permitAll()
-            )
+            .anyRequest().authenticated())
+            .oauth2ResourceServer(config-> config.jwt(jwt-> jwt.decoder(jwtDecoder())));
 
         return http.build();
     }
-
+    @Bean
+    BCryptPasswordEncoder bPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    JwtEncoder jwtEncoder(){
+        return new NimbusJwtEncoder(
+            new ImmutableJWKSet<>(
+                new JWKSet(
+                    new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build()
+                )
+                )
+        );
+    }
+    @Bean 
+    JwtDecoder jwtDecoder(){
+        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+    }
+        
+    
 }
