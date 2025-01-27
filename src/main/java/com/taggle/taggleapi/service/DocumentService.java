@@ -7,7 +7,6 @@ import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.taggle.taggleapi.model.DTO.Document.DocumentGET;
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
 import com.taggle.taggleapi.model.DTO.Document.NoteDocGET;
 import com.taggle.taggleapi.model.DTO.Folder.FolderPOST;
