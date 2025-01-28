@@ -1,4 +1,4 @@
-package config;
+package com.taggle.taggleapi.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -25,42 +25,43 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    
+
     @Value("${jwt.public.key}")
     private RSAPublicKey publicKey;
 
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
-    
+
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/signin").permitAll()
-            .requestMatchers(HttpMethod.POST,"/login").permitAll()
-            .anyRequest().authenticated())
-            .oauth2ResourceServer(config-> config.jwt(jwt-> jwt.decoder(jwtDecoder())));
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/signin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
         return http.build();
     }
+
     @Bean
-    BCryptPasswordEncoder bPasswordEncoder(){
+    BCryptPasswordEncoder bPasswordEncoder() {
+        System.out.println(publicKey);
+        System.out.println(privateKey);
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    JwtEncoder jwtEncoder(){
+    JwtEncoder jwtEncoder() {
         return new NimbusJwtEncoder(
-            new ImmutableJWKSet<>(
-                new JWKSet(
-                    new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build()
-                )
-                )
-        );
+                new ImmutableJWKSet<>(
+                        new JWKSet(
+                                new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build())));
     }
-    @Bean 
-    JwtDecoder jwtDecoder(){
+
+    @Bean
+    JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-        
-    
+
 }
