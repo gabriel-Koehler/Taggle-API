@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
@@ -23,12 +24,16 @@ import com.taggle.taggleapi.repository.NoteRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public class DocumentService {
-    private final ModelMapper mapper;
+    @Autowired
+    private ModelMapper mapper;
+    @Autowired
     private DocumentRepository repository;
+    @Autowired
     private UserService userService;
+    @Autowired
     private FolderRepository folderRepository;
+    @Autowired
     private NoteRepository noteRepository;
 
     public Folder saveFolder(FolderPOST entity,Long ownerId) {

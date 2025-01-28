@@ -26,17 +26,17 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 @EnableMethodSecurity
 public class SecurityConfig {
     
-    @Value("${}")
+    @Value("${jwt.public.key}")
     private RSAPublicKey publicKey;
 
-    @Value("${}")
+    @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
     
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/signin").permitAll()
+            .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/signin").permitAll()
             .requestMatchers(HttpMethod.POST,"/login").permitAll()
             .anyRequest().authenticated())
             .oauth2ResourceServer(config-> config.jwt(jwt-> jwt.decoder(jwtDecoder())));

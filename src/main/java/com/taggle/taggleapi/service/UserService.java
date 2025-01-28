@@ -3,10 +3,17 @@ package com.taggle.taggleapi.service;
 import java.util.List;
 import java.util.Set;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.taggle.taggleapi.model.DTO.UserTaggle.UserTagglePOST;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
+import com.taggle.taggleapi.model.entity.Roles;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.DocumentRepository;
 import com.taggle.taggleapi.repository.FolderRepository;
@@ -15,15 +22,29 @@ import com.taggle.taggleapi.repository.UserTaggleRepository;
 
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class UserService {
+    @Autowired
     private UserTaggleRepository repository;
+    @Autowired
     private FolderRepository folderRepository;
+    @Autowired
     private NoteRepository noteRepository;
+    @Autowired
+    private ModelMapper mapper;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserTaggle saveUserTaggle(UserTaggle userTaggle) {
+    public UserTaggle saveUserTaggle(UserTagglePOST userPOST) {
+        if(repository.findByUsername(userPOST.getUsername()).isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username alredy exists");
+        }
+        UserTaggle userTaggle = new UserTaggle();
+        mapper.map(userPOST, userTaggle);
+        userTaggle.setPassword(bCryptPasswordEncoder.encode(userPOST.getPassword()));
+        userTaggle.setRoles(List.of(Roles.ROLE_ADMIN));
         repository.save(userTaggle);
+
         Folder defaultFolder = new Folder();
         defaultFolder.setTitle("Default For Note");
         defaultFolder.setType("Folder");
