@@ -3,6 +3,7 @@ package com.taggle.taggleapi.config;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.taggle.taggleapi.service.TokenService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,14 +33,23 @@ public class SecurityConfig {
 
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
-
+    @Autowired
+    private TokenService service;
+    @Bean
+public JwtAuthenticationFilter jwtAuthenticationFilter(TokenService tokenService) {
+    return new JwtAuthenticationFilter(tokenService);
+}
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/signin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.GET, "/user/hello").permitAll()
+                        .anyRequest().authenticated()
+                        )
+                    .addFilterBefore(new JwtAuthenticationFilter(service), 
+                    org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
         return http.build();
