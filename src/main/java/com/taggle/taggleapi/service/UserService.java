@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.taggle.taggleapi.model.DTO.UserTaggle.UserTaggleGET;
 import com.taggle.taggleapi.model.DTO.UserTaggle.UserTagglePOST;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
@@ -68,10 +69,16 @@ public class UserService {
     public UserTaggle getUserTaggle(Long userId) {
         return repository.findById(userId).get();
     }
-    public List<UserTaggle> getAllUserTaggle() {
+    public List<UserTaggleGET> getAllUserTaggle() {
         List<UserTaggle> users =repository.findAll();
-
-        return users.stream().map(UserTaggle::toDTO).toList();
+        // System.out.println(users);
+        return users.stream().map(e -> new UserTaggleGET(
+                                    e.getId(),
+                                    e.getUsername(),
+                                    e.getAtCreate(),
+                                    e.getAtLastAlteration(),
+                                    e.getIsActive()
+                                    )).toList();
     }
     public void deleteUserTaggle(Long userId) {
         repository.deleteById(userId);

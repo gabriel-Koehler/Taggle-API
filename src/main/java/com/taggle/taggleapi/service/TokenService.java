@@ -4,10 +4,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -21,6 +23,7 @@ import com.nimbusds.jwt.JWT;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.UserTaggleRepository;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 
@@ -44,6 +47,12 @@ public class TokenService {
             throw new BadCredentialsException("Username or Password Invalid");
         }
 
+        List<String> authorities = user.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)  // Assume que o método getAuthority retorna uma string como "ROLE_ADMIN"
+            .collect(Collectors.toList());
+
+        System.out.println(authorities);        
+
         Instant now=Instant.now();
         Long expiresIn=300L;
         JwtClaimsSet claims=JwtClaimsSet.builder()
@@ -51,9 +60,10 @@ public class TokenService {
             .subject(user.getUsername())
             .issuedAt(now)
             .expiresAt(now.plusSeconds(expiresIn))
-            .claim("scope",  user.getAuthorities().toArray()[0].toString() )
+            .claim("scope",  authorities )
             .build();
-        // validateToken(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
+        validateToken(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
+        
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
@@ -61,7 +71,7 @@ public class TokenService {
         try {
             Jwt jwt = jwtDecoder.decode(token); // Decodifica e verifica a assinatura
             Instant now = Instant.now();
-            System.out.println(jwt.getSubject()+"  legal demais meu subject");
+            System.out.println(jwt.getClaims().get("scope")+"  legal demais meu subject");
             // Verifica se o token expirou
             if (jwt.getExpiresAt() == null || jwt.getExpiresAt().isBefore(now)) {
                 return false;
@@ -74,5 +84,16 @@ public class TokenService {
     }
     public String extractUsername(String token){
         return jwtDecoder.decode(token).getSubject();
+    }
+    public List<String> extractAuthorities(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        Object scope = jwt.getClaims().get("scope");
+    
+        if (scope instanceof List<?>) {
+            return ((List<?>) scope).stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
+        }
+        return List.of();
     }
 }

@@ -34,7 +34,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody UserTagglePOST loginDTO) {
         var token = this.tokenService.login(loginDTO.getUsername(), loginDTO.getPassword());
-
+        System.out.println("loginnn");
         return ResponseEntity.ok(Map.of("token", token));
     }
 

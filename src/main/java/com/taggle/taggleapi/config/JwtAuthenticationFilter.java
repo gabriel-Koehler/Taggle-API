@@ -1,10 +1,14 @@
 package com.taggle.taggleapi.config;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -33,9 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7); // Extract token from header
             if (jwtService.validateToken(token)) {
                 String username = jwtService.extractUsername(token);
+                List<String> roles = jwtService.extractAuthorities(token);
+
+                // Converte as roles para authorities do Spring Security
+                List<GrantedAuthority> authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+                System.out.println(authorities+" aaa mds authorities");
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(username, null, 
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                        authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication); // Set authentication
             }
         }

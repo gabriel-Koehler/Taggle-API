@@ -2,6 +2,7 @@ package com.taggle.taggleapi.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taggle.taggleapi.model.DTO.UserTaggle.UserTaggleGET;
 import com.taggle.taggleapi.model.DTO.UserTaggle.UserTagglePOST;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.service.UserService;
@@ -35,8 +36,7 @@ public class UserTaggleController {
         return "Hello world!";
     }
     @GetMapping("")
-    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
-    public ResponseEntity<List<UserTaggle>> get() {
+    public ResponseEntity<List<UserTaggleGET>> get() {
         return new ResponseEntity<>(service.getAllUserTaggle(),HttpStatus.OK);
     }
     
