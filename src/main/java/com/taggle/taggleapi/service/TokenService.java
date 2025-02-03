@@ -2,6 +2,8 @@ package com.taggle.taggleapi.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +51,7 @@ public class TokenService {
             .subject(user.getUsername())
             .issuedAt(now)
             .expiresAt(now.plusSeconds(expiresIn))
-            .claim("scope", user.getAuthorities())
+            .claim("scope",  user.getAuthorities().toArray()[0].toString() )
             .build();
         // validateToken(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

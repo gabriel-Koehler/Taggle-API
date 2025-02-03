@@ -2,6 +2,7 @@ package com.taggle.taggleapi.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +12,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -33,12 +38,7 @@ public class SecurityConfig {
 
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
-    @Autowired
-    private TokenService service;
-    @Bean
-public JwtAuthenticationFilter jwtAuthenticationFilter(TokenService tokenService) {
-    return new JwtAuthenticationFilter(tokenService);
-}
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -48,7 +48,7 @@ public JwtAuthenticationFilter jwtAuthenticationFilter(TokenService tokenService
                         .requestMatchers(HttpMethod.GET, "/user/hello").permitAll()
                         .anyRequest().authenticated()
                         )
-                    .addFilterBefore(new JwtAuthenticationFilter(service), 
+                    .addFilterBefore(new JwtAuthenticationFilter(), 
                     org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
@@ -74,5 +74,25 @@ public JwtAuthenticationFilter jwtAuthenticationFilter(TokenService tokenService
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-
+    //   @Bean
+    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    //     JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+    //     converter.setJwtGrantedAuthoritiesConverter(new JwtGrantedAuthoritiesConverter() {
+    //         @Override
+    //         public Collection<GrantedAuthority> convert(Jwt jwt) {
+    //             // Supondo que as authorities estão dentro do claim "scope" (ajuste conforme sua necessidade)
+    //             Object authorities = jwt.getClaims().get("scope");
+    //             if (authorities instanceof List) {
+    //                 List<?> roles = (List<?>) authorities;
+    //                 return roles.stream()
+    //                     .map(role -> new SimpleGrantedAuthority((String) role))
+    //                     .collect(Collectors.toList());
+    //             } else if (authorities instanceof String) {
+    //                 return Collections.singletonList(new SimpleGrantedAuthority((String) authorities));
+    //             }
+    //             return Collections.emptyList();
+    //         }
+    //     });
+    //     return converter;
+    // }
 }
