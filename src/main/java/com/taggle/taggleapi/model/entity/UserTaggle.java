@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -52,8 +53,7 @@ public class UserTaggle implements ConvertToResponse<UserTaggle>,UserDetails  {
     private LocalDateTime atLastAlteration;
     private Boolean isActive=true;
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Roles> roles;
+    private Roles role;
     @Override
     public UserTaggle toDTO() {
         UserTaggle dto = new UserTaggle();
@@ -71,7 +71,7 @@ public class UserTaggle implements ConvertToResponse<UserTaggle>,UserDetails  {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role ->(GrantedAuthority) ()-> role.name() ).toList();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
     @Override
     public boolean isAccountNonExpired() {

@@ -6,6 +6,9 @@ import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,7 +27,7 @@ import com.taggle.taggleapi.repository.UserTaggleRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-public class UserService {
+public class UserService{
     @Autowired
     private UserTaggleRepository repository;
     @Autowired
@@ -43,7 +46,7 @@ public class UserService {
         UserTaggle userTaggle = new UserTaggle();
         mapper.map(userPOST, userTaggle);
         userTaggle.setPassword(bCryptPasswordEncoder.encode(userPOST.getPassword()));
-        userTaggle.setRoles(List.of(Roles.ROLE_ADMIN));
+        userTaggle.setRole(Roles.ROLE_ADMIN);
         repository.save(userTaggle);
 
         Folder defaultFolder = new Folder();
@@ -83,4 +86,9 @@ public class UserService {
     public void deleteUserTaggle(Long userId) {
         repository.deleteById(userId);
     }
+    // @Override
+    // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
+    // }
 }

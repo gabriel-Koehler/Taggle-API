@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.taggle.taggleapi.model.entity.Roles;
 import com.taggle.taggleapi.service.TokenService;
 
 @Configuration
@@ -48,7 +51,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/signin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/hello").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                         )
                     .addFilterBefore(new JwtAuthenticationFilter(), 
@@ -57,6 +59,12 @@ public class SecurityConfig {
 
         return http.build();
     }
+    // @Bean
+    // public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    //     AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    //     authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    //     return authenticationManagerBuilder.build();
+    // }
 
     @Bean
     BCryptPasswordEncoder bPasswordEncoder() {

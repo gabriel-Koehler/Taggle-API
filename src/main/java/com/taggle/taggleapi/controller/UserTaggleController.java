@@ -36,6 +36,7 @@ public class UserTaggleController {
         return "Hello world!";
     }
     @GetMapping("")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     public ResponseEntity<List<UserTaggleGET>> get() {
         return new ResponseEntity<>(service.getAllUserTaggle(),HttpStatus.OK);
     }
