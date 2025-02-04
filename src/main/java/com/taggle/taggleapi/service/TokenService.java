@@ -51,27 +51,33 @@ public class TokenService {
             .map(GrantedAuthority::getAuthority)  // Assume que o método getAuthority retorna uma string como "ROLE_ADMIN"
             .collect(Collectors.toList());
 
-        System.out.println(authorities);        
-
+        return jwtEncoder.encode(JwtEncoderParameters.from(
+            generateToken(user.getUsername(), authorities)  // Assumindo que o método generateToken retorna um JwtClaimsSet
+        )).getTokenValue();
+    }
+    public JwtClaimsSet generateToken(String subject, List<String> authorities){
         Instant now=Instant.now();
         Long expiresIn=300L;
-        JwtClaimsSet claims=JwtClaimsSet.builder()
+        return JwtClaimsSet.builder()
             .issuer("taggle_backend")
-            .subject(user.getUsername())
+            .subject(subject)
             .issuedAt(now)
             .expiresAt(now.plusSeconds(expiresIn))
-            .claim("scope",  authorities )
+            .claim("scope",  authorities)
             .build();
-        validateToken(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
-        
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
-
+    public String refreshToken(String token){
+        Jwt jwt=jwtDecoder.decode(token);
+          
+        return jwtEncoder.encode(JwtEncoderParameters.from(
+            generateToken(jwt.getSubject(), (List<String>) jwt.getClaims().get("scope"))
+        )).getTokenValue();
+    }
     public boolean validateToken(String token) {
         try {
             Jwt jwt = jwtDecoder.decode(token); // Decodifica e verifica a assinatura
             Instant now = Instant.now();
-            System.out.println(jwt.getClaims().get("scope")+"  legal demais meu subject");
+            // System.out.println(jwt.getClaims().get("scope")+"  legal demais meu subject");
             // Verifica se o token expirou
             if (jwt.getExpiresAt() == null || jwt.getExpiresAt().isBefore(now)) {
                 return false;
