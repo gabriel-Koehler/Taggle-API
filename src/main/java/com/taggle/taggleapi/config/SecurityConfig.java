@@ -25,12 +25,15 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.taggle.taggleapi.model.entity.Roles;
 import com.taggle.taggleapi.service.TokenService;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -43,10 +46,14 @@ public class SecurityConfig {
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
 
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/signin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
@@ -85,25 +92,5 @@ public class SecurityConfig {
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-    //   @Bean
-    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    //     JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-    //     converter.setJwtGrantedAuthoritiesConverter(new JwtGrantedAuthoritiesConverter() {
-    //         @Override
-    //         public Collection<GrantedAuthority> convert(Jwt jwt) {
-    //             // Supondo que as authorities estão dentro do claim "scope" (ajuste conforme sua necessidade)
-    //             Object authorities = jwt.getClaims().get("scope");
-    //             if (authorities instanceof List) {
-    //                 List<?> roles = (List<?>) authorities;
-    //                 return roles.stream()
-    //                     .map(role -> new SimpleGrantedAuthority((String) role))
-    //                     .collect(Collectors.toList());
-    //             } else if (authorities instanceof String) {
-    //                 return Collections.singletonList(new SimpleGrantedAuthority((String) authorities));
-    //             }
-    //             return Collections.emptyList();
-    //         }
-    //     });
-    //     return converter;
-    // }
+
 }

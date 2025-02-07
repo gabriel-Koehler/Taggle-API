@@ -43,6 +43,7 @@ public class UserService{
         if(repository.findByUsername(userPOST.getUsername()).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username alredy exists");
         }
+        System.out.println(userPOST);
         UserTaggle userTaggle = new UserTaggle();
         mapper.map(userPOST, userTaggle);
         userTaggle.setPassword(bCryptPasswordEncoder.encode(userPOST.getPassword()));
