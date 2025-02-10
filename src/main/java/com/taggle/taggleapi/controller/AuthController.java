@@ -38,6 +38,15 @@ public class AuthController {
             System.out.println("loginnn");
             return ResponseEntity.ok(Map.of("token", token));
         }catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refresh(@RequestBody String token) {
+        try{
+            return ResponseEntity.ok(Map.of("token", this.tokenService.refreshToken(token)));
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
