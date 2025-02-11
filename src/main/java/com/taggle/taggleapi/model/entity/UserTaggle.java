@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,8 +41,10 @@ public class UserTaggle implements ConvertToResponse<UserTaggle>,UserDetails  {
    generator = ObjectIdGenerators.PropertyGenerator.class,
    property = "id")
     private Long id;
+    @Column(unique = true)
     private String username;
     @Nullable
+    @Column(unique = true)
     private String email;
     private String password;
     @OneToMany(mappedBy = "owner")

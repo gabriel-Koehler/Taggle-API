@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.taggle.taggleapi.model.DTO.Document.FolderDocGET;
@@ -83,10 +84,15 @@ public class DocumentService {
         note.setTitle(entity.getTitle());
         return noteRepository.save(note).toDTO();
     }
-    public List<FolderDocGET> getFolders(Long id){
-        return folderRepository.findByOwner(userService.getUserTaggle(id))
+    public List<FolderDocGET> getFoldersByOwner(Long id){
+        return folderRepository.findByOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()))
         .stream().filter((f)->f.getParentFolder()==null)
         .map((f)->new FolderDocGET(f))
+        .toList();
+    }
+    public List<FolderDocGET> getFolders(Long id){
+        return folderRepository.findByOwner(userService.getUserTaggle(id))
+        .stream().map((f)->new FolderDocGET(f))
         .toList();
     }
 

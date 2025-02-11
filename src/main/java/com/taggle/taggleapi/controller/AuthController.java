@@ -35,7 +35,6 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> login(@RequestBody UserTagglePOST loginDTO) {
         try{
             var token = this.tokenService.login(loginDTO.getUsername(), loginDTO.getPassword());
-            System.out.println("loginnn");
             return ResponseEntity.ok(Map.of("token", token));
         }catch (Exception e) {
             System.out.println(e);

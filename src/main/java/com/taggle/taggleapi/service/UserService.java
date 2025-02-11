@@ -66,6 +66,9 @@ public class UserService{
 
         return userTaggle;
     }
+    public UserTaggle findByUsername(String username) {
+        return repository.findByUsername(username).get();
+    }
     public UserTaggle putUserTaggle(UserTaggle userTaggle,Long userId) {
         repository.findById(userId).get();
         return repository.save(userTaggle);
