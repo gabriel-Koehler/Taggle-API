@@ -16,7 +16,17 @@ public class FolderDocGET extends DocumentGET{
     private List<DocumentGET> content;
 
     public FolderDocGET(Folder doc) {        
-        super(doc.getId(),"Folder",doc.getTitle(),doc.getAtCreate(),doc.getAtLastAlteration(),doc.getIsActive());
+        super(
+            doc.getId(),
+            "Folder",
+            doc.getTitle(),
+            doc.getAtCreate(),
+            doc.getAtLastAlteration(),
+            doc.getParentFolder()!=null ?
+            doc.getParentFolder().getId()
+            :
+            null,
+            doc.getIsActive());
         this.content =doc.getContent().stream().map((e)->{
             if(e instanceof Folder){
                 Folder folder = (Folder)e;

@@ -19,5 +19,6 @@ public abstract class DocumentGET {
     private String title;
     private LocalDateTime atCreate;
     private LocalDateTime atLastAlteration;
+    private Long parentFolder;
     private Boolean isActive=true;
 }

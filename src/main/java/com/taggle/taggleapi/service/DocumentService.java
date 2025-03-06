@@ -37,11 +37,19 @@ public class DocumentService {
     @Autowired
     private NoteRepository noteRepository;
 
-    public Folder saveFolder(FolderPOST entity,Long ownerId) {
+    public Folder saveFolder(FolderPOST entity,Long ownerId, Long parentFolder) {
+        Folder folderParent;
+        folderParent= parentFolder!=0? 
+        folderRepository.findById(parentFolder).get()
+        : 
+        null;
+        
         Folder folder = new Folder();
         mapper.map(entity,folder);
-        folder.setOwner(userService.getUserTaggle(ownerId));
+        folder.setOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        // folder.setOwner(userService.getUserTaggle(ownerId));
         folder.setType("Folder");
+        folder.setParentFolder(folderParent);
         return folderRepository.save(folder).toDTO();
     }
     public Note saveNote(NotePOST entity,Long id,Long ownerId) {
@@ -51,7 +59,7 @@ public class DocumentService {
         note.setContent(entity.getContent());
         note.setType("Note");
         note.setParentFolder(folderRepository.findById(id).get());
-        note.setOwner(userService.getUserTaggle(ownerId));
+        note.setOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
         System.out.println(note.toDTO());
         return noteRepository.save(note).toDTO();
     }
@@ -85,19 +93,27 @@ public class DocumentService {
         return noteRepository.save(note).toDTO();
     }
     public List<FolderDocGET> getFoldersByOwner(Long id){
-        return folderRepository.findByOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()))
+        return folderRepository.findByOwner(
+            userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+            )
         .stream().filter((f)->f.getParentFolder()==null)
         .map((f)->new FolderDocGET(f))
         .toList();
     }
     public List<FolderDocGET> getFolders(Long id){
-        return folderRepository.findByOwner(userService.getUserTaggle(id))
+        return folderRepository.findByOwner(
+            userService.getUserTaggle(id)
+            )
         .stream().map((f)->new FolderDocGET(f))
         .toList();
     }
 
     public List<NoteDocGET> getNoteOwner(long id) {
-        return noteRepository.findByOwner(userService.getUserTaggle(id)).stream().map((e)->new NoteDocGET(e)).toList();
+        return noteRepository.findByOwner(
+            userService.getUserTaggle(id)
+            )
+            .stream().map((e)->new NoteDocGET(e))
+            .toList();
     }
     public Document getDocumentPerOwner(long id) {
         return null;

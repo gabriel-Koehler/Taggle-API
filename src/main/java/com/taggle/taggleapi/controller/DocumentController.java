@@ -33,10 +33,10 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
     //finished
-    @PostMapping("/create/folder/{ownerId}")
-    public ResponseEntity<Folder> createFolder(@RequestBody FolderPOST document,@PathVariable Long ownerId) {
+    @PostMapping("/create/folder/{ownerId}/{parentFolderId}")
+    public ResponseEntity<Folder> createFolder(@RequestBody FolderPOST document,@PathVariable Long ownerId,@PathVariable Long parentFolderId) {
         try{
-            return new ResponseEntity<>(documentService.saveFolder(document, ownerId),HttpStatus.OK);
+            return new ResponseEntity<>(documentService.saveFolder(document, ownerId, parentFolderId ),HttpStatus.OK);
         }catch(Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,7 +74,15 @@ public class DocumentController {
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+    // @GetMapping("/get/{folderId}")
+    // public ResponseEntity<List<FolderDocGET>> getAllNoteByFolder(@PathVariable Long ownerId) {
+    //     try{
+    //         return new ResponseEntity<>(documentService.getFoldersByOwner(ownerId),HttpStatus.OK);
+    //     }catch(Exception e){
+    //         System.out.println(e.getMessage());
+    //         return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
     @GetMapping("/get/note/{id}")
     public ResponseEntity<Note> getNoteById(@PathVariable Long id) {
         try{

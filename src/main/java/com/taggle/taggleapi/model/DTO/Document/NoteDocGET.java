@@ -13,7 +13,14 @@ public class NoteDocGET extends DocumentGET{
     private String content;
 
     public NoteDocGET(Note note) {
-        super(note.getId(),"Note",note.getTitle(),note.getAtCreate(),note.getAtLastAlteration(),note.getIsActive());
+        super(
+            note.getId(),
+            "Note",
+            note.getTitle(),
+            note.getAtCreate(),
+            note.getAtLastAlteration(),
+            note.getParentFolder().getId(),
+            note.getIsActive());
         this.content = note.getContent();
     }
 }
