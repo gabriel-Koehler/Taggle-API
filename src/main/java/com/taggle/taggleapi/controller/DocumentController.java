@@ -22,7 +22,6 @@ import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
 import com.taggle.taggleapi.service.DocumentService;
 
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -33,20 +32,20 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
     //finished
-    @PostMapping("/create/folder/{ownerId}/{parentFolderId}")
-    public ResponseEntity<Folder> createFolder(@RequestBody FolderPOST document,@PathVariable Long ownerId,@PathVariable Long parentFolderId) {
+    @PostMapping("/create/folder/{parentFolderId}")
+    public ResponseEntity<Folder> createFolder(@RequestBody FolderPOST document,@PathVariable Long parentFolderId) {
         try{
-            return new ResponseEntity<>(documentService.saveFolder(document, ownerId, parentFolderId ),HttpStatus.OK);
+            return new ResponseEntity<>(documentService.saveFolder(document, parentFolderId ),HttpStatus.OK);
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(e);
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     //finished
-    @PostMapping("/create/note/{folderId}/{ownerId}")
-    public ResponseEntity<Note> createNote(@RequestBody NotePOST entity,@PathVariable Long folderId,@PathVariable Long ownerId) {
+    @PostMapping("/create/note/{folderId}")
+    public ResponseEntity<Note> createNote(@RequestBody NotePOST entity,@PathVariable Long folderId) {
         try{
-            return new ResponseEntity<>(documentService.saveNote(entity, folderId, ownerId),HttpStatus.OK);
+            return new ResponseEntity<>(documentService.saveNote(entity, folderId),HttpStatus.OK);
 
         }catch(Exception e){
             System.out.println(e.getMessage());

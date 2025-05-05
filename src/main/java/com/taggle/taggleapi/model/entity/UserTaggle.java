@@ -17,11 +17,9 @@ import com.taggle.taggleapi.model.DTO.ConvertToResponse;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -56,6 +54,7 @@ public class UserTaggle implements ConvertToResponse<UserTaggle>,UserDetails  {
     private LocalDateTime atLastAlteration;
     private Boolean isActive=true;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Roles role;
     @Override
     public UserTaggle toDTO() {
@@ -74,6 +73,7 @@ public class UserTaggle implements ConvertToResponse<UserTaggle>,UserDetails  {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == null) return List.of();
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
     @Override

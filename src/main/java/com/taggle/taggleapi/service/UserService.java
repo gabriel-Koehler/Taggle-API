@@ -1,7 +1,7 @@
 package com.taggle.taggleapi.service;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
-import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,9 @@ import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
 import com.taggle.taggleapi.model.entity.Roles;
 import com.taggle.taggleapi.model.entity.UserTaggle;
-import com.taggle.taggleapi.repository.DocumentRepository;
 import com.taggle.taggleapi.repository.FolderRepository;
 import com.taggle.taggleapi.repository.NoteRepository;
 import com.taggle.taggleapi.repository.UserTaggleRepository;
-
-import lombok.AllArgsConstructor;
 
 @Service
 public class UserService{
@@ -90,9 +87,5 @@ public class UserService{
     public void deleteUserTaggle(Long userId) {
         repository.deleteById(userId);
     }
-    // @Override
-    // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
-    // }
+   
 }

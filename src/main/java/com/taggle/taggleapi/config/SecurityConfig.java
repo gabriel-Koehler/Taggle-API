@@ -2,42 +2,34 @@ package com.taggle.taggleapi.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.taggle.taggleapi.model.entity.Roles;
 import com.taggle.taggleapi.service.TokenService;
-
-import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ComponentScan(basePackages = "com.taggle.taggleapi")
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
@@ -48,9 +40,9 @@ public class SecurityConfig {
 
     @Autowired
     private CorsConfigurationSource corsConfigurationSource;
-
+    
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http,TokenService tokenService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -64,18 +56,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user/hello").permitAll()
                         .anyRequest().authenticated()
                         )
-                    .addFilterBefore(new JwtAuthenticationFilter(), 
+                    .addFilterBefore(new JwtAuthenticationFilter(tokenService), 
                     org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
         return http.build();
     }
-    // @Bean
-    // public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-    //     AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-    //     authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    //     return authenticationManagerBuilder.build();
-    // }
 
     @Bean
     BCryptPasswordEncoder bPasswordEncoder() {
@@ -86,6 +72,7 @@ public class SecurityConfig {
 
     @Bean
     JwtEncoder jwtEncoder() {
+        System.out.println("Criando JwtEncoder com chave pública: " + publicKey);
         return new NimbusJwtEncoder(
                 new ImmutableJWKSet<>(
                         new JWKSet(
@@ -94,7 +81,12 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
+        System.out.println("Criando JwtEncoder com chave pública: " + publicKey);
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
+    @Bean
+JwtAuthenticationFilter jwtAuthenticationFilter(TokenService tokenService) {
+    return new JwtAuthenticationFilter(tokenService);
+}
 
 }

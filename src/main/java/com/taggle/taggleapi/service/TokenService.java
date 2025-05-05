@@ -1,8 +1,6 @@
 package com.taggle.taggleapi.service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,24 +16,17 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.nimbusds.jwt.JWT;
 import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.UserTaggleRepository;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class TokenService {
-    @Autowired
     private UserTaggleRepository userRepostiRepository;
-    @Autowired
     private JwtEncoder jwtEncoder;
-    @Autowired
     private JwtDecoder jwtDecoder;
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public String login(String username,String password) {
@@ -77,6 +68,7 @@ public class TokenService {
         try {
             Jwt jwt = jwtDecoder.decode(token); // Decodifica e verifica a assinatura
             Instant now = Instant.now();
+            List a =List.of(extractAuthorities(token));
             // System.out.println(jwt.getClaims().get("scope")+"  legal demais meu subject");
             // Verifica se o token expirou
             if (jwt.getExpiresAt() == null || jwt.getExpiresAt().isBefore(now)) {
@@ -85,6 +77,7 @@ public class TokenService {
 
             return true;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return false;
         }
     }

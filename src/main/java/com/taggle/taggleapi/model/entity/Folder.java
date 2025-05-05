@@ -2,12 +2,8 @@ package com.taggle.taggleapi.model.entity;
 
 import java.util.List;
 
-import com.taggle.taggleapi.model.DTO.ConvertToResponse;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +28,7 @@ public class Folder extends Document {
         dto.setAtCreate(getAtCreate());
         dto.setAtLastAlteration(getAtLastAlteration());
         dto.setIsActive(getIsActive());
-        dto.setOwner(getOwner()!=null?getOwner().toDTO():null);
+        // dto.setOwner(getOwner()!=null?getOwner().toDTO():null);
         dto.setParentFolder(getParentFolder()!=null?getParentFolder().toDTO():null);
         return dto;
     }

@@ -1,8 +1,5 @@
 package com.taggle.taggleapi.service;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +15,10 @@ import com.taggle.taggleapi.model.DTO.Note.NotePUT;
 import com.taggle.taggleapi.model.entity.Document;
 import com.taggle.taggleapi.model.entity.Folder;
 import com.taggle.taggleapi.model.entity.Note;
+import com.taggle.taggleapi.model.entity.UserTaggle;
 import com.taggle.taggleapi.repository.DocumentRepository;
 import com.taggle.taggleapi.repository.FolderRepository;
 import com.taggle.taggleapi.repository.NoteRepository;
-
-import lombok.AllArgsConstructor;
 
 @Service
 public class DocumentService {
@@ -37,26 +33,29 @@ public class DocumentService {
     @Autowired
     private NoteRepository noteRepository;
 
-    public Folder saveFolder(FolderPOST entity,Long ownerId, Long parentFolder) {
+    public Folder saveFolder(FolderPOST entity, Long parentFolder) {
         Folder folderParent;
         folderParent= parentFolder!=0? 
-        folderRepository.findById(parentFolder).get()
-        : 
-        null;
+            folderRepository.findById(parentFolder).get()
+            : 
+            null;
         
         Folder folder = new Folder();
         mapper.map(entity,folder);
-        folder.setOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+
+        UserTaggle owner=userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println(owner);
+        folder.setOwner(owner);
         // folder.setOwner(userService.getUserTaggle(ownerId));
         folder.setType("Folder");
         folder.setParentFolder(folderParent);
         return folderRepository.save(folder).toDTO();
     }
-    public Note saveNote(NotePOST entity,Long id,Long ownerId) {
+    public Note saveNote(NotePOST entity,Long id) {
         Note note = new Note();
         mapper.map(entity,note);
         note.setTitle(entity.getTitle());
-        note.setContent(entity.getContent());
+        // note.setContent(entity.getContent());
         note.setType("Note");
         note.setParentFolder(folderRepository.findById(id).get());
         note.setOwner(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));

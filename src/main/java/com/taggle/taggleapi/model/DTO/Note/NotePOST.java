@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @Data
 public class NotePOST {
     private String title;
-    private String content;
 }
